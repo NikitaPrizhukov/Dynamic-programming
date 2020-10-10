@@ -1,0 +1,80 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+//из дерева с n-вершинами, сделать дерево с m-вершинами, путем обрезания минимального количества связей, выводит число связей которые надо обрезать
+
+using namespace std;
+const int INF = 1000000;
+
+vector<int> cutLink(vector<vector<int>>& mas, int root, int& find, int& minn, int& up, int back = -1) {
+
+	vector<int> count(up + 1, INF);
+	int tops = mas[root].size();
+	if (back != -1) {
+		tops--;
+	}
+
+	count[1] = tops;
+
+	for (int i = 0; i < mas[root].size(); i++) {
+
+		if (mas[root][i] != back) {
+
+			vector<int> topCount = cutLink(mas, mas[root][i], find, minn, up, root);
+
+			for (int f = up; f >= 1; f--) {
+				if (count[f] != INF) {
+
+					for (int j = 1; j <= up; j++) {
+
+						if (topCount[j] != INF) {
+
+							count[f + j] = min(count[f + j], count[f] + topCount[j] - 1);
+						} else {
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (back == -1) {
+		minn = min(minn, count[find]);
+	} else {
+		minn = min(minn, count[find] + 1);
+	}
+
+	return count;
+}
+
+int main() {
+
+	int count, find;
+	cin >> count >> find;
+
+	if (count <= find) {
+		cout << 0;
+		return 0;
+	}
+
+	vector<vector<int>> mas(count + 1);
+
+	for (int i = 0; i < count - 1; i++) {
+
+		int a, b;
+		cin >> a >> b;
+
+		mas[a].push_back(b);
+		mas[b].push_back(a);
+	}
+
+	int min = INF;
+
+	cutLink(mas, 1, find, min, count);
+
+	cout << min;
+
+	return 0;
+}
