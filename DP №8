@@ -1,0 +1,72 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+//перемножение матриц
+
+int matrixC(vector<int>& a, vector<int>& b) {
+
+    int res = 0;
+
+    for (int i = 0; i < a.size(); i++) {
+        res = res + (a[i] * b[i]);
+    }
+
+    return res;
+}
+
+int main() {
+
+    int n, k1;
+    cin >> n >> k1;
+
+    vector<vector<int>> mas1(n);
+
+    for (int i = 0; i < n; i++) {
+        for (int f = 0; f < k1; f++) {
+            int a;
+            cin >> a;
+            mas1[i].push_back(a);
+        }
+    }
+
+    int k2, m;
+    cin >> k2 >> m;
+
+    vector<vector<int>> mas2(m);
+
+    if (k1 != k2) {
+        cout << -1 << endl;
+        return 0;
+    }
+
+    for (int i = 0; i < k2; i++) {
+        for (int f = 0; f < m; f++) {
+            int a;
+            cin >> a;
+            mas2[f].push_back(a);
+        }
+    }
+
+    int** matrix = new int* [n];
+    for (int i = 0; i < n; i++) {
+        matrix[i] = new int[m];
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int f = 0; f < m; f++) {
+            matrix[i][f] = matrixC(mas1[i], mas2[f]);
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int f = 0; f < m; f++) {
+
+            cout << matrix[i][f] << " ";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
