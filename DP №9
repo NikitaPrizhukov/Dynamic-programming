@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+//задача о рюкзаке
+
+bool comp(int a, int b) {
+    return a > b;
+}
+
+int main() {
+
+    int count, w;
+    cin >> count >> w;
+
+    vector<pair<int, int>> things(count);
+
+    for (int i = 0; i < count; i++) {
+        cin >> things[i].first >> things[i].second;
+    }
+
+    int** box = new int* [w + 1];
+
+    for (int i = 0; i < w + 1; i++) {
+        box[i] = new int[count + 1];
+    }
+
+    for (int i = 0; i < w + 1; i++) {
+        box[i][0] = 0;
+    }
+
+    for (int i = 0; i < count + 1; i++) {
+        box[0][i] = 0;
+    }
+
+    for (int i = 1; i < count + 1; i++) {
+        for (int f = 1; f < w + 1; f++) {
+            if (f >= things[i - 1].first) {
+                box[f][i] = max(box[f][i - 1], box[f - things[i - 1].first][i - 1] + things[i - 1].second);
+            }
+            else {
+                box[f][i] = box[f][i - 1];
+            }
+        }
+    }
+
+    vector<int> an;
+
+    int index = box[w][count];
+    int i = w;
+    int f = count + 1;
+
+    while (index > 0) {
+
+        if (box[i][f - 1] == index) {
+            f--;
+        }
+        else {
+            an.push_back(f);
+            i = i - things[f - 1].first;
+            f--;
+            index = box[i][f];
+        }
+    }
+
+    cout << an.size() << endl;
+    sort(an.begin(), an.end(), comp);
+    for (int i = 0; i < an.size(); i++) {
+        cout << an[i] << " ";
+    }
+
+    return 0;
+}
