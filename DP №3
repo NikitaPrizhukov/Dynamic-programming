@@ -1,0 +1,103 @@
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <deque>
+
+using namespace std;
+
+//количество путей от вершины А до вершины В в графе
+
+bool maxLen(vector<vector<int>>& mas, vector<pair<long long, vector<int>>>& mas2, vector<int>& flag, deque<int>& an, int root) {
+
+
+    for (int i = 0; i < mas[root].size(); i++) {
+
+        if (flag[mas[root][i]] == 0) {
+
+            maxLen(mas, mas2, flag, an, mas[root][i]);
+            flag[mas[root][i]] = 1;
+        }
+    }
+
+    an.push_front(root);
+
+    return false;
+}
+
+
+int main() {
+
+    int count;
+    cin >> count;
+
+    int len;
+    cin >> len;
+
+    vector<vector<int>> mas(count);
+    vector<int> flag(count);
+
+    for (size_t i = 0; i < flag.size(); i++) {
+        flag[i] = 0;
+    }
+
+    for (int i = 0; i < len; i++) {
+
+        int a, b;
+        cin >> a >> b;
+
+        if (a != b) {
+            mas[a - 1].push_back(b - 1);
+        }
+    }
+
+    int A, B;
+    cin >> A >> B;
+    A--; B--;
+
+    deque<int> an;
+    vector<pair<long long, vector<int>>> mas2(count);
+
+    flag[A] = 1;
+    maxLen(mas, mas2, flag, an, A);
+
+    int size = an.size();
+    deque<int> an2;
+
+    for (int i = 0; i < size; i++) {
+        if (flag[an.front()] == true) {
+            for (int f = 0; f < mas[an.front()].size(); f++) {
+                if (flag[mas[an.front()][f]] == true) {
+                    mas2[an.front()].second.push_back(mas[an.front()][f]);
+                }
+            }
+        }
+        an2.push_back(an.front());
+        an.pop_front();
+    }
+
+
+    if (flag[B] == 0) {
+        cout << 0;
+        return 0;
+    }
+
+    mas2[A].first = 1;
+    int c = an2.size();
+
+    for (int i = 0; i < c; i++) {
+        for (int f = 0; f < mas2[an2.front()].second.size(); f++) {
+
+            mas2[mas2[an2.front()].second[f]].first += mas2[an2.front()].first % 1000000007;
+        }
+
+        an2.pop_front();
+        if (an2.empty()) {
+            break;
+        }
+    }
+
+    cout << mas2[B].first % 1000000007;
+
+
+    return 0;
+}
