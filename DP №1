@@ -1,0 +1,26 @@
+#include <iostream>
+
+using namespace std;
+
+//числа Фибоначчи
+
+int main(){
+
+    int n;
+    cin >> n;
+    
+    const long long m = 1000000007;
+    long long a = 1;
+    long long b = 1;
+    long long c = 1;
+
+    for (int i = 0; i < n-1; i++) {
+        b = (a%m + b%m)%m;
+        a = c;
+        c = b;
+    }
+
+    cout << b;
+
+    return 0;
+}
