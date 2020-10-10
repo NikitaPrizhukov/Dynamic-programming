@@ -1,0 +1,96 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+//общая максимальная подпоследовательность двух последовательностей
+
+int main() {
+
+    int oneCount;
+    cin >> oneCount;
+
+    vector<int> one(oneCount);
+
+    for (int i = 0; i < oneCount; i++) {
+        cin >> one[i];
+    }
+
+    int twoCount;
+    cin >> twoCount;
+
+    vector<int> two(twoCount);
+
+    if (oneCount < 1 || twoCount < 1) {
+        cout << 0 << endl;
+        return 0;
+    }
+
+    for (int i = 0; i < twoCount; i++) {
+        cin >> two[i];
+    }
+
+    int** mas = new int* [oneCount + 1];
+    for (int i = 0; i < oneCount + 1; i++) {
+        mas[i] = new int[twoCount + 1];
+    }
+
+    for (int i = 0; i < oneCount + 1; i++) {
+        mas[i][0] = 0;
+    }
+    for (int i = 0; i < twoCount + 1; i++) {
+        mas[0][i] = 0;
+    }
+
+    mas[0][0] = 0;
+
+    vector<int> first;
+    vector<int> second;
+    int index = 0;
+
+    for (int i = 1; i < oneCount + 1; i++) {
+        for (int f = 1; f < twoCount + 1; f++) {
+
+            if (two[f - 1] == one[i - 1]) {
+                mas[i][f] = mas[i - 1][f - 1] + 1;
+            }
+            else {
+                mas[i][f] = max(mas[i - 1][f], mas[i][f - 1]);
+            }
+        }
+    }
+
+    int i = oneCount;
+    int f = twoCount;
+
+    while (i > 0 && f > 0) {
+
+        if (one[i - 1] == two[f - 1]) {
+            first.push_back(i);
+            second.push_back(f);
+            i--; f--;
+        }
+        else if (mas[i - 1][f] == mas[i][f]) {
+            i--;
+        }
+        else {
+            f--;
+        }
+    }
+    cout << mas[oneCount][twoCount] << endl;
+
+    if (mas[oneCount][twoCount] > 0) {
+        for (int i = first.size() - 1; i > -1; i--) {
+            cout << first[i] << " ";
+        }
+
+        cout << endl;
+
+        for (int i = second.size() - 1; i > -1; i--) {
+            cout << second[i] << " ";
+        }
+    }
+
+    return 0;
+}
