@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <algorithm>
+
+//найти максимальное по весу паросочитание в графе
+
+using namespace std;
+
+int pairGraf(vector<vector<pair<int, int>>>& mas, vector<int>& flag, vector<pair<int, int>>& dp, int root, int back = -1) {
+
+	flag[root] = 1;
+	int index = -1;
+
+	for (size_t i = 0; i < mas[root].size(); i++) {
+
+		if (flag[mas[root][i].first] == 0) {
+			pairGraf(mas, flag, dp, mas[root][i].first, root);
+
+			dp[root].first = dp[root].first + max(dp[mas[root][i].first].first, dp[mas[root][i].first].second);
+		}
+	}
+
+	for (int i = 0; i < mas[root].size(); i++) {
+		if (mas[root][i].first != back) {
+
+			int m = 0;
+			m = dp[mas[root][i].first].first + mas[root][i].second;
+			index = i;
+			for (size_t f = 0; f < mas[root].size(); f++) {
+				if (f != index && mas[root][f].first != back) {
+					m = m + max(dp[mas[root][f].first].first, dp[mas[root][f].first].second);
+				}
+			}
+
+			if (m > dp[root].second) {
+				dp[root].second = m;
+			}
+
+		}
+	}
+
+	return 1;
+}
+
+int main() {
+
+	int count;
+	cin >> count;
+
+	vector<vector<pair<int, int>>> mas(count);
+	vector<int> flag(count);
+
+	for (size_t i = 0; i < flag.size(); i++) {
+		flag[i] = 0;
+	}
+
+	for (int i = 0; i < count - 1; i++) {
+
+		int a, b, w;
+		cin >> a >> b >> w;
+
+		mas[a - 1].push_back(make_pair(b - 1, w));
+		mas[b - 1].push_back(make_pair(a - 1, w));
+	}
+
+	vector<pair<int, int>> dp(count);
+
+	pairGraf(mas, flag, dp, 0);
+
+	if (dp[0].first < dp[0].second) {
+		cout << dp[0].second << endl;
+		return 0;
+	}
+
+	cout << dp[0].first << endl;
+
+	return 0;
+}
