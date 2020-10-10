@@ -1,0 +1,53 @@
+#include <iostream>
+
+using namespace std;
+
+//выводин минимальное количество купюр набранных для нужной суммы
+
+int wayTakeCoin(int* FaceValue, int sum, int coin) {
+
+    const int INF = 1000000000;
+    int* F = new int[sum + 1];
+    F[0] = 0;
+    int m, i;
+    for (m = 1; m <= sum; ++m)   
+    {                   
+        F[m] = INF;        
+        for (i = 0; i < coin; ++i)  
+        {
+            if (m >= FaceValue[i] && F[m - FaceValue[i]] + 1 < F[m])
+                F[m] = F[m - FaceValue[i]] + 1; 
+        }                       
+    }
+
+    return F[sum];
+}
+
+
+int main() {
+
+    string text;
+    int sum;
+    int coin;
+    int* faceValue;
+
+    cin >> sum;
+    cin >> coin;
+
+    faceValue = new int[coin];
+
+    for (int i = 0; i < coin; i++) {
+        cin >> faceValue[i];
+    }
+
+    int s = wayTakeCoin(faceValue, sum, coin);
+
+    if (s == 1000000000) {
+        cout << -1 << endl;
+        return 0;
+    }
+
+    cout << s << endl;
+
+    return 0;
+}
