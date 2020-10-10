@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+//достроить строку до палиндрома
+
+string get_palindrome(string const& s, int** dp, int n, int m) {
+    if (dp[n][m]) {
+        if (dp[n][m - 1] < dp[n + 1][m]) {
+            return s[m] + get_palindrome(s, dp, n, m - 1) + s[m];
+        }
+        return s[n] + get_palindrome(s, dp, n + 1, m) + s[n];
+    }
+    return s.substr(n, m - n + 1);
+}
+
+int main() {
+
+    string text;
+    cin >> text;
+    int len = text.length();
+
+    int** box = new int* [len];
+
+    for (int i = 0; i < len; i++) {
+        box[i] = new int[len];
+    }
+
+    for (int f = 0; f < len; f++) {
+        for (int i = 0; i < len; i++) {
+            box[f][i] = 0;
+        }
+    }
+
+    for (int i = len - 2; i > -1; i--) {
+        for (int f = i + 1; f < len; f++) {
+
+            if (text[i] == text[f]) {
+                box[i][f] = box[i + 1][f - 1];
+            }
+            else {
+                box[i][f] = min(box[i + 1][f], box[i][f - 1]) + 1;
+            }
+        }
+    }
+
+
+    cout << box[0][len - 1] << endl;
+    cout << get_palindrome(text, box, 0, len - 1);
+
+
+    return 0;
+}
